@@ -24,12 +24,14 @@ const Content = () => {
 
     return (
         <div className={style.content_section} onClick={() => { setShowMenu(false) }}>
-            <i className={`${style.menu_button} fas fa-bars text-dark m-2 pointer`}
+            <i className={`${style.menu_button} fas fa-bars text-dark m-2 pointer d-md-none`}
                 onClick={handleShowMenu}></i>
 
             <Routes>
                 <Route path='/' element={isUser ? <Users /> : <Navigate replace to='/posts' />} />
-                <Route path='/user/add' element={<AddUser />} />
+                <Route path='/user/add' element={<AddUser />}>
+                    <Route path=":userId" />
+                </Route>
                 <Route path='/posts' element={<Posts />} />
                 <Route path='/gallery' element={<Gallery />} />
                 <Route path='/todo' element={<Todos />} />
