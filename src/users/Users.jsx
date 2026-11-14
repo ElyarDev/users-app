@@ -1,10 +1,22 @@
-import React from 'react';
-import style from '../style.module.css'
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import style from '../style.module.css';
+
 import swal from 'sweetalert';
+import axios from 'axios';
 
 const Users = () => {
     const navigate = useNavigate();
+    const [user, setUser] = useState([]);
+
+    useEffect(() => {
+        axios.get('https://jsonplaceholder.typicode.com/users')
+            .then(res => {
+                setUser(res.data);
+            }).catch(err => {
+                console.log(err);
+            })
+    }, [])
 
     // sweet alert
     const handleDelete = (itemId) => {
@@ -44,37 +56,47 @@ const Users = () => {
                     </Link>
                 </div>
             </div>
-            <table className="table bg-light shadow">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>نام</th>
-                        <th>نام کاربری</th>
-                        <th>ایمیل</th>
-                        <th>عملیات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>qasem</td>
-                        <td>qasemB</td>
-                        <td>mahdicmptr@gmail.com</td>
-                        <td>
-                            {/* <Link to={"/user/add/2"}>
+
+            {user.length ? (
+                <table className="table bg-light shadow">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نام</th>
+                            <th>نام کاربری</th>
+                            <th>ایمیل</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {user.map(u => {
+                            return (
+                                <tr key={u.id}>
+                                    <td>{u.id}</td>
+                                    <td>{u.name}</td>
+                                    <td>{u.username}</td>
+                                    <td>{u.email}</td>
+                                    <td>
+                                        {/* <Link to={"/user/add/2"}>
                                 <i className="fas fa-edit text-warning mx-2 pointer"></i>
                             </Link> */}
 
-                            <i className="fas fa-edit text-warning mx-2 pointer" onClick={() => {
-                                return navigate("/user/add/2", { state: "id" });
-                            }}></i>
+                                        <i className="fas fa-edit text-warning mx-2 pointer" onClick={() => {
+                                            return navigate("/user/add/2", { state: "id" });
+                                        }}></i>
 
-                            <i className="fas fa-trash text-danger mx-2 pointer"
-                                onClick={() => { handleDelete(1) }}></i>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                        <i className="fas fa-trash text-danger mx-2 pointer"
+                                            onClick={() => { handleDelete(1) }}></i>
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            ) : (
+                <h4 className='text-center text-info'>لطفا صبر کنید....</h4>
+            )}
+
         </div>
     )
 }
