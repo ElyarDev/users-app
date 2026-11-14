@@ -1,10 +1,32 @@
 import React from 'react';
 import style from '../style.module.css'
 import { Link, useNavigate } from 'react-router';
+import swal from 'sweetalert';
 
 const Users = () => {
-
     const navigate = useNavigate();
+
+    // sweet alert
+    const handleDelete = (itemId) => {
+        swal(`آیا از حذف رکورد ${itemId} اطمینان دارید؟`);
+
+        swal({
+            title: 'حذف رکورد',
+            text: `آیا از حذف رکورد ${itemId} اطمینان دارید؟`,
+            icon: 'warning',
+            buttons: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("با موفقیت حذف شد", {
+                        icon: 'success'
+                    })
+                }
+                else {
+                    swal('رکورد پاک نشد')
+                }
+            })
+    }
 
     return (
         <div className={`${style.item_content} mt-5 p-4 container-fluid`}>
@@ -44,10 +66,11 @@ const Users = () => {
                             </Link> */}
 
                             <i className="fas fa-edit text-warning mx-2 pointer" onClick={() => {
-                                return navigate("/user/add/2");
+                                return navigate("/user/add/2", { state: "id" });
                             }}></i>
 
-                            <i className="fas fa-trash text-danger mx-2 pointer"></i>
+                            <i className="fas fa-trash text-danger mx-2 pointer"
+                                onClick={() => { handleDelete(1) }}></i>
                         </td>
                     </tr>
                 </tbody>
