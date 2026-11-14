@@ -18,7 +18,7 @@ const Users = () => {
             })
     }, [])
 
-    // sweet alert
+    // delete with sweet alert
     const handleDelete = (itemId) => {
         swal(`آیا از حذف رکورد ${itemId} اطمینان دارید؟`);
 
@@ -26,16 +26,35 @@ const Users = () => {
             title: 'حذف رکورد',
             text: `آیا از حذف رکورد ${itemId} اطمینان دارید؟`,
             icon: 'warning',
-            buttons: true,
+            buttons: ["خیر", "بله"],
+            dangerMode: true,
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    swal("با موفقیت حذف شد", {
-                        icon: 'success'
+                    axios({
+                        method: "DELETE",
+                        url: `https://jsonplaceholder.typicode.com/users/${itemId}`
+                    }).then(res => {
+                        if (res.status == 200) {
+
+                            const newUsers = user.filter(u => u.id !== itemId);
+                            setUser(newUsers);
+
+                            swal("با موفقیت حذف شد", {
+                                icon: 'success',
+                                buttons: "متوجه شدم"
+                            })
+                        }
+                        else {
+                            swal('عملیات با خطا مواجه شد', {
+                                icon: "error",
+                                button: "متوجه شدم"
+                            });
+                        }
                     })
                 }
                 else {
-                    swal('رکورد پاک نشد')
+                    swal('رکورد پاک نشد');
                 }
             })
     }
@@ -86,7 +105,7 @@ const Users = () => {
                                         }}></i>
 
                                         <i className="fas fa-trash text-danger mx-2 pointer"
-                                            onClick={() => { handleDelete(1) }}></i>
+                                            onClick={() => { handleDelete(u.id) }}></i>
                                     </td>
                                 </tr>
                             )
