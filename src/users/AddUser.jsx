@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router';
 import style from '../style.module.css';
 
 import axios from 'axios';
 
+import swal from 'sweetalert';
+
 const AddUser = () => {
     const { userId } = useParams();
-    const params = useLocation();
     const navigate = useNavigate();
 
     // TO ADD USER
@@ -24,10 +25,47 @@ const AddUser = () => {
 
     const handleAddUser = (e) => {
         e.preventDefault();
-        axios.post('https://jsonplaceholder.typicode.com/users', data).then(res => {
-            console.log(res.data)
-        })
+
+        if (!userId) {
+            axios.post('https://jsonplaceholder.typicode.com/users', data).then(res => {
+                console.log(res.data)
+                swal(`با موفقیت ایجاد شد ${res.data.name}`, {
+                    icon: 'success',
+                    buttons: "متوجه شدم"
+                })
+            })
+        }
+        else {
+            axios.put(`https://jsonplaceholder.typicode.com/users/${userId}`, data).then(res => {
+                console.log(res.data)
+                swal(`با موفقیت ویرایش شد ${res.data.name}`, {
+                    icon: 'success',
+                    buttons: "متوجه شدم"
+                })
+            })
+        }
     }
+
+    // EDIT USER
+    useEffect(() => {
+        if (!userId) return;
+
+        axios.get(`https://jsonplaceholder.typicode.com/users/${userId}`)
+            .then(res => {
+                setData({
+                    name: res.data.name,
+                    username: res.data.username,
+                    email: res.data.email,
+                    address: {
+                        street: res.data.address.street,
+                        city: res.data.address.city,
+                        suite: res.data.address.suite,
+                        zipcode: res.data.address.zipcode
+                    }
+                })
+            })
+            .catch(err => console.log(err));
+    }, [userId]);
 
     return (
         <div className={`${style.item_content} mt-5 p-4 container-fluid container`}>
@@ -114,7 +152,7 @@ const AddUser = () => {
                     <div className="col-12 text-start">
                         <button type="button" className="btn btn-danger ms-2"
                             onClick={() => navigate(-1)}>بازگشت</button>
-                        <button type="submit" class="btn btn-primary" >
+                        <button type="submit" className="btn btn-primary" >
                             {userId ? "ویرایش " : "افزودن "}
                         </button>
                     </div>

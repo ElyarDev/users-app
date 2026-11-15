@@ -101,7 +101,7 @@ const Users = () => {
                             </Link> */}
 
                                         <i className="fas fa-edit text-warning mx-2 pointer" onClick={() => {
-                                            return navigate("/user/add/2", { state: "id" });
+                                            return navigate(`/user/add/${u.id}`);
                                         }}></i>
 
                                         <i className="fas fa-trash text-danger mx-2 pointer"
