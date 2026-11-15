@@ -9,10 +9,13 @@ const Users = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState([]);
 
+    const [mainUser, setMainUser] = useState();
+
     useEffect(() => {
         axios.get('https://jsonplaceholder.typicode.com/users')
             .then(res => {
                 setUser(res.data);
+                setMainUser(res.data);
             }).catch(err => {
                 console.log(err);
             })
@@ -59,12 +62,17 @@ const Users = () => {
             })
     }
 
+    // SEARCH USER
+    const handleSearch = (e) => {
+        setUser(mainUser.filter(u => u.name.includes(e.target.value)));
+    }
+
     return (
         <div className={`${style.item_content} mt-5 p-4 container-fluid`}>
             <h4 className="text-center">مدیریت کاربران</h4>
             <div className="row my-2 mb-4 justify-content-between w-100 mx-0">
                 <div className="form-group col-10 col-md-6 col-lg-4">
-                    <input type="text" className="form-control shadow" placeholder="جستجو" />
+                    <input type="text" className="form-control shadow" placeholder="جستجو" onChange={handleSearch} />
                 </div>
 
                 <div className="col-2 text-start px-0">
