@@ -5,6 +5,7 @@ import style from '../style.module.css';
 import axios from 'axios';
 
 import swal from 'sweetalert';
+import { jpAxios } from '../jpAxios';
 
 const AddUser = () => {
     const { userId } = useParams();
@@ -27,7 +28,7 @@ const AddUser = () => {
         e.preventDefault();
 
         if (!userId) {
-            axios.post('https://jsonplaceholder.typicode.com/users', data).then(res => {
+            jpAxios.post('/users', data).then(res => {
                 console.log(res.data)
                 swal(`با موفقیت ایجاد شد ${res.data.name}`, {
                     icon: 'success',
@@ -36,7 +37,7 @@ const AddUser = () => {
             })
         }
         else {
-            axios.put(`https://jsonplaceholder.typicode.com/users/${userId}`, data).then(res => {
+            jpAxios.put(`/users/${userId}`, data).then(res => {
                 console.log(res.data)
                 swal(`با موفقیت ویرایش شد ${res.data.name}`, {
                     icon: 'success',
