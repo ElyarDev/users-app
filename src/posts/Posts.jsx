@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import style from '../style.module.css';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router';
@@ -8,6 +8,10 @@ import WithAlert from '../HOC/WithAlert';
 
 const Posts = (props) => {
     const [post, setPost] = useState([]);
+
+    const [mainPost, setMainPost] = useState([]);
+    const [uId, setUId] = useState("");
+
     const navigate = useNavigate;
 
     const { Confirm, Alert } = props;
@@ -16,10 +20,19 @@ const Posts = (props) => {
     useEffect(() => {
         axios.get('https://jsonplaceholder.typicode.com/posts').then((res) => {
             setPost(res.data);
+            setMainPost(res.data);
         }).catch(err => { console.log(err) })
     }, [])
 
-    const handleSearch = () => { }
+    // SEARCHING POSTS
+    const handleSearch = (e) => {
+        if (uId > 0) { setPost(mainPost.filter(p => p.userId == uId)) }
+        else setPost(mainPost);
+    }
+
+    useEffect(() => {
+        handleSearch();
+    }, [uId])
 
     // DELETING POSTS
     const handleDelete = async (itemId) => {
@@ -52,7 +65,8 @@ const Posts = (props) => {
             <h4 className="text-center">مدیریت پست ها</h4>
             <div className="row my-2 mb-4 justify-content-between w-100 mx-0">
                 <div className="form-group col-10 col-md-6 col-lg-4">
-                    <input type="text" className="form-control shadow" placeholder="جستجو" onChange={handleSearch} />
+                    <input type="number" className="form-control shadow" placeholder="جستجو" value={uId}
+                        onChange={(e) => setUId(e.target.value)} />
                 </div>
 
                 <div className="col-2 text-start px-0">
@@ -80,7 +94,7 @@ const Posts = (props) => {
                             return (
                                 <tr key={p.id}>
                                     <td>{p.id}</td>
-                                    <td>{p.userId}</td>
+                                    <td className='text-primary' style={{ cursor: "pointer" }} onClick={() => setUId(p.userId)}>{p.userId}</td>
                                     <td>{p.title}</td>
                                     <td>{p.body}</td>
                                     <td>

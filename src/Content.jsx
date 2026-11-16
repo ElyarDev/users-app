@@ -30,9 +30,7 @@ const Content = () => {
 
             <Routes>
                 {/* <Route path='/' element={isUser ? <Users /> : <Navigate replace to='/posts' />} /> */}
-                <Route path='/' element={
-                    <WithAlert2 render={(Confirm, Alert) => <Users Confirm={Confirm} Alert={Alert} />} />
-                } />
+                <Route path='/' element={<Users />} />
                 <Route path='/user/add' element={<AddUser />}>
                     <Route path=":userId" />
                 </Route>
