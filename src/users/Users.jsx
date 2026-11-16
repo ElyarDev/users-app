@@ -4,12 +4,15 @@ import style from '../style.module.css';
 
 import swal from 'sweetalert';
 import axios from 'axios';
+import WithAlert from '../HOC/WithAlert';
 
-const Users = () => {
+const Users = (props) => {
     const navigate = useNavigate();
     const [user, setUser] = useState([]);
 
     const [mainUser, setMainUser] = useState();
+
+    const { Confirm, Alert } = props;
 
     useEffect(() => {
         axios.get('https://jsonplaceholder.typicode.com/users')
@@ -21,45 +24,33 @@ const Users = () => {
             })
     }, [])
 
-    // delete with sweet alert
-    const handleDelete = (itemId) => {
+    // DELETE WITH SWEETALERT AND USING HOC
+    const handleDelete = async (itemId) => {
         swal(`آیا از حذف رکورد ${itemId} اطمینان دارید؟`);
 
-        swal({
-            title: 'حذف رکورد',
-            text: `آیا از حذف رکورد ${itemId} اطمینان دارید؟`,
-            icon: 'warning',
-            buttons: ["خیر", "بله"],
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    axios({
-                        method: "DELETE",
-                        url: `https://jsonplaceholder.typicode.com/users/${itemId}`
-                    }).then(res => {
-                        if (res.status == 200) {
 
-                            const newUsers = user.filter(u => u.id !== itemId);
-                            setUser(newUsers);
 
-                            swal("با موفقیت حذف شد", {
-                                icon: 'success',
-                                buttons: "متوجه شدم"
-                            })
-                        }
-                        else {
-                            swal('عملیات با خطا مواجه شد', {
-                                icon: "error",
-                                button: "متوجه شدم"
-                            });
-                        }
-                    })
+        if (await Confirm(`آیا از حذف رکورد ${itemId} اطمینان دارید؟`)) {
+            axios({
+                method: "DELETE",
+                url: `https://jsonplaceholder.typicode.com/users/${itemId}`
+            }).then(res => {
+                if (res.status == 200) {
+
+                    const newUsers = user.filter(u => u.id !== itemId);
+                    setUser(newUsers);
+
+                    Alert("حذف با موفقیت انجام شد", "success");
                 }
                 else {
-                    swal('رکورد پاک نشد');
+                    Alert("عملیات با خطا مواجه شد", "error");
                 }
             })
+        }
+        else {
+            Alert("شما منصرف شدید", "info");
+        }
+
     }
 
     // SEARCH USER
@@ -128,4 +119,4 @@ const Users = () => {
     )
 }
 
-export default Users;
+export default WithAlert(Users);
