@@ -119,4 +119,5 @@ const Users = (props) => {
     )
 }
 
-export default WithAlert(Users);
+export default Users;
+// export default WithAlert(Users);

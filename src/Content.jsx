@@ -11,6 +11,7 @@ import Users from './users/Users';
 import AddUser from './users/AddUser';
 
 import { Navigate, Route, Routes } from 'react-router';
+import WithAlert2 from './HOC/WithAlert2';
 
 const Content = () => {
 
@@ -28,18 +29,22 @@ const Content = () => {
                 onClick={handleShowMenu}></i>
 
             <Routes>
-                <Route path='/' element={isUser ? <Users /> : <Navigate replace to='/posts' />} />
+                {/* <Route path='/' element={isUser ? <Users /> : <Navigate replace to='/posts' />} /> */}
+                <Route path='/' element={
+                    <WithAlert2 render={(Confirm, Alert) => <Users Confirm={Confirm} Alert={Alert} />} />
+                } />
                 <Route path='/user/add' element={<AddUser />}>
                     <Route path=":userId" />
                 </Route>
                 <Route path='/posts' element={<Posts />} />
                 <Route path='/gallery' element={<Gallery />} />
                 <Route path='/todo' element={<Todos />} />
-                <Route path='*' element={<Users />} />
+                <Route path='*' element={
+                    <WithAlert2 render={(Confirm, Alert) => <Users Confirm={Confirm} Alert={Alert} />} />
+                } />
             </Routes>
         </div>
     )
-
 }
 
 export default Content;
